@@ -1,0 +1,221 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:id="@+id/layout_study"
+    tools:context=".StudyActivity" >
+
+    <RelativeLayout       
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        android:background="@color/black"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/layout_unit_top"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/black"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnPrev"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/control_stop_left"
+                android:drawablePadding="-13dp"
+                android:text="@string/study_prev"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" >
+            </Button>
+
+            <Button
+                android:id="@+id/btnNext"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/btnPrev"
+                android:drawablePadding="-13dp"
+                android:drawableRight="@drawable/control_stop_right"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:text="@string/study_next"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" >
+            </Button>
+
+            <ImageButton
+                android:id="@+id/btnFullScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:contentDescription="@string/empty"
+                android:src="@drawable/fullscreen" />
+
+            <CheckBox
+                android:id="@+id/chkCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/btnFullScreen"
+                android:text="@string/study_completed"
+                android:textColor="@android:color/white" />
+
+            <CheckBox
+                android:id="@+id/chkAutoPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/chkCompleted"
+                android:text="@string/study_autoplay"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/txtUnitName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/chkAutoPlay"
+                android:layout_toRightOf="@id/btnNext"
+                android:lines="1"
+                android:textColor="@color/item_font_color"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_unit_bottom"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/darker_gray"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/tabMaterial"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/study_material"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" >
+            </Button>
+
+            <Button
+                android:id="@+id/tabNote"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/study_notes"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" >
+            </Button>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/container_unit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_unit_bottom"
+            android:layout_below="@id/layout_unit_top" >
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtProgressStep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/study_progress_load_knowledge"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:background="@color/item_font_color"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/layout_progress"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/gray"
+            android:orientation="vertical" >
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="264dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center|bottom"
+                android:layout_weight="0.5" />
+
+            <LinearLayout
+                android:layout_width="264dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/txtProgressStatus"
+                    android:layout_width="214dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/study_default_status"
+                    android:textColor="@color/item_font_color" />
+
+                <TextView
+                    android:id="@+id/txtProgress"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/study_default_progress"
+                    android:textColor="@color/item_font_color" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lvUnits"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_progress"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:listSelector="@android:color/darker_gray" >
+        </ListView>
+    </RelativeLayout>
+
+</LinearLayout>

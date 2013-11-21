@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/view_detail"
+        android:icon="@drawable/detail"
+        android:orderInCategory="1"
+        android:showAsAction="always|withText"
+        android:title="@string/study_view_detail"/>
+    <item
+        android:id="@+id/add_note"
+        android:icon="@drawable/pen"
+        android:orderInCategory="2"
+        android:showAsAction="always|withText"
+        android:title="@string/study_add_notes"/>
+
+</menu>

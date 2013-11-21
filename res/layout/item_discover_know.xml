@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/item_horizontal_margin"
+    android:paddingLeft="@dimen/item_horizontal_margin"
+    android:paddingRight="@dimen/item_horizontal_margin"
+    android:paddingTop="@dimen/item_horizontal_margin" >
+
+    <FrameLayout
+        android:layout_width="90dp"
+        android:layout_height="90dp" >
+
+        <ImageView
+            android:id="@+id/imgKnowledge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/empty" >
+        </ImageView>
+
+        <tw.com.ischool.oneknow.util.CircleProgressBar
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/item_horizontal_margin" >
+
+        <TextView
+            android:id="@+id/txtKnowName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="3"
+            android:paddingTop="@dimen/item_horizontal_margin"
+            android:textColor="@color/blue"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/item_horizontal_margin" >
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:contentDescription="@string/empty"
+                android:src="@drawable/subscriber" />
+
+            <TextView
+                android:id="@+id/txtSubscriberCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/default_int" />
+
+            <RatingBar
+                android:id="@+id/rating"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:max="5" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

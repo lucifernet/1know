@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no" />
+		<!-- bootstrap css -->
+		<!--<link href="../css/bootstrap.min.css" rel="stylesheet" media="screen" >
+		<link href="../css/default.css" rel="stylesheet" > -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<!--<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>-->
+		<!-- <script src="bootstrap.min.js" ></script> -->
+		<script src="CanvasPainter.min.js" ></script>
+
+
+	</head>
+	<body>
+		<div id="divCanvasContainer" style="width:800px;height:600px;background-color:lightyellow;">
+		</div>
+
+		<script>
+		/*
+			ischool.WindowResizeHandler.handle(function() {
+					$('#divCanvasContainer').width(800);
+				});
+
+		*/
+			/* 建立小畫家物件 */
+				painter = ischool.Painter.create({
+					containerID : 'divCanvasContainer',
+					penSize : 4,
+					penColor : '#000000',
+					/* 每一筆劃完成後就會觸發此事件，可用來即時同步各個畫面 */
+					afterStroke : function(stroke) {
+						//console.log("===  after stroke ==");
+						//console.log(JSON.stringify(stroke));
+					}
+				});
+				
+				function getStrokes(){				
+					var strokes = painter.getStrokes();
+					var str = JSON.stringify(strokes);
+					window.jscallback.getStrokes(str);
+				}
+				
+				function getScreenShot(){
+					var screenshot = painter.getImageDataUrl();					
+					window.jscallback.getScreenShot(screenshot);
+				}
+				
+				function setStrokes(){					
+					var str = window.jscallback.setStrokes();
+					var json = jQuery.parseJSON(str);					
+					painter.setStrokes(json);					
+				}
+				
+				function undo(){
+					painter.undo();
+				}
+				
+				function redo(){
+					painter.redo();
+				}
+				
+				function clean(){
+					painter.clean();
+				}
+		</script>
+	</body>
+</html>

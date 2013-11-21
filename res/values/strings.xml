@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">1know</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="item_login">Login</string>
+    <string name="item_profile">Profile</string>
+    <string name="item_sep_learning">Learning</string>
+    <string name="item_your_knowledge">Your Knowledges</string>
+    <string name="item_your_notes">Your Notes</string>
+    <string name="item_your_activity">Your Activities</string>
+    <string name="item_sep_channel">Channel</string>
+    <string name="item_discover">Discover Knowledge</string>
+    <string name="item_editor_choice">Editors\' Choice</string>
+    <string name="item_your_channel">Your Channel</string>
+    <string name="item_sep_setup">Setup</string>
+    <string name="item_logout">Logout</string>
+    <string name="empty"></string>
+    <string name="save">Save</string>
+    <string name="remove">Remove</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+    <string name="profile_tab_knowledges">Knowledges</string>
+    <string name="profile_tab_brief">Brief</string>
+    <string name="search_title">Search</string>
+    <string name="reload_title">Reload</string>
+    <string name="search_hint">What would you like to search?</string>
+    <string name="title_activity_login">Login 1Know</string>
+    <string name="login_slogan">Flip Your Learning</string>
+    <string name="login">Login</string>
+    <string name="login_username">Enter your username</string>
+    <string name="login_username_empty">Username can not be empty.</string>
+    <string name="login_password">Enter your password</string>
+    <string name="login_password_empty">Password can not be empty.</string>
+    <string name="error_incorrect_password">Incorrect UserName or Password.</string>
+    <string name="invalid_password_characters">Invalid password characters</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="subscribe">subscribe</string>
+    <string name="subscribed">subscribed</string>
+    <string name="New">New</string>
+    <string name="seconds_ago">%s seconds ago</string>
+    <string name="minutes_ago">%s minutes ago</string>
+    <string name="hours_ago">%s hours ago</string>
+    <string name="days_ago">%s days ago</string>
+    <string name="date_formater">yyyy/MM/dd</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="loading_error">Loading error:%s</string>
+    <string name="title_activity_search_result">「%s」Search Results</string>
+    <string name="default_int">0</string>
+    <string name="study_prev">PREV</string>
+    <string name="study_next">NEXT</string>
+    <string name="study_status_completed">COMPLETED</string>
+    <string name="study_default_status">Course Progress</string>
+    <string name="study_default_progress">0%</string>
+    <string name="study_material">Materials</string>
+    <string name="study_notes">Notes</string>
+    <string name="study_add_notes">Add new note</string>
+    <string name="study_view_detail">Study History</string>
+    <string name="study_notes_loading">Loading notes&#8230;</string>
+    <string name="study_autoplay">Autoplay</string>
+    <string name="study_completed">Completed</string>
+    <string name="study_progress_load_knowledge">Loading knowledge information&#8230;</string>
+    <string name="study_progress_load_units">Loading units&#8230;</string>
+    <string name="study_time_hour">%sh</string>
+    <string name="study_time_minute">%sm</string>
+    <string name="study_time_second">%ss</string>
+    <string name="study_loading_vimeo_video">Loading Vimeo Video</string>
+    <string name="study_load_notes_error">Notes loading error : %s</string>
+    <string name="study_save_notes_error">Notes saving error : %s</string>
+    <string name="study_note_hint">Input your note here</string>
+    <string name="study_note_time">Time</string>
+    <string name="study_note">Note</string>
+    <string name="study_note_del_confirm">Are you sure you want to delete this note ?</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="search_result_count">Find %s matching results</string>
+    <string name="title_activity_study">StudyActivity</string>
+    <string name="title_activity_edit_note">EditNoteActivity</string>
+    <string name="title_activity_know_info">KnowInfoActivity</string>
+
+    <!-- KnowInfoActivity below -->
+    <string name="unsubscribe">unsubscribe</string>
+    <string name="start_learning">Start Learning</string>
+
+    <!-- StudyHistoryView below -->
+    <string name="history_studying_minutes">Studying Minutes</string>
+    <string name="history_today">Today</string>
+    <string name="history_week">Last 7 Days</string>
+    <string name="history_30">Last 30 Days</string>
+    <string name="history_title">「%s」 Time spent</string>
+    <string name="history_unsubscribe_confirm">Are you sure you want to unscribe this knowledge ?</string>
+    <string name="history_unsubscribe_failure">Unsubscribe failure : %s</string>
+
+    <!-- Your note fragment below -->
+    <string name="note_loading">Loading your notes&#8230;</string>
+    <string name="note_load_error">Note loading error : %s</string>
+    <string name="title_activity_url">URLActivity</string>
+    <string name="note_get_know_error">Get knowledge error : %s</string>
+
+    <!-- Quiz fragment below -->
+    <string name="quiz_prev">Prev Quiz</string>
+    <string name="quiz_next">Next Quiz</string>
+    <string name="quiz_check">Check Answers</string>
+    <string name="quiz_get_error">Get knowledge error : %s</string>
+    <string name="quiz_correct_ans">Correct Answer(s) : </string>
+    <string name="quiz">Quiz</string>
+    <string name="quiz_your_ans">Your Answer(s) : </string>
+    <string name="quiz_explain">Explain : </string>
+    <string name="quiz_explain_url">Reference URL : </string>
+    <string name="quiz_save_completed">Save completed</string>
+    <string name="quiz_save_error">Save failure : %s</string>
+    <string name="title_activity_quiz">QuizActivity</string>
+    <string name="title_activity_draw">DrawActivity</string>
+
+    <!-- Draw fragment below -->
+    <string name="draw_load_error">Draw loading error:%s</string>
+    <string name="draw_save_completed">Save completed</string>
+    <string name="draw_save_error">Save failure : %s</string>
+
+    <!-- Poll fragment below -->
+    <string name="poll">Poll</string>
+    <string name="poll_save_completed">Poll completed</string>
+    <string name="poll_save_error">Poll failure : %s</string>
+    <string name="title_activity_poll">PollActivity</string>
+
+    <!-- QA fragment below -->
+    <string name="qa_ans">Answer</string>
+    <string name="qa_save_completed">Answer completed</string>
+    <string name="qa_save_error">Answer failure : %s</string>
+
+</resources>
