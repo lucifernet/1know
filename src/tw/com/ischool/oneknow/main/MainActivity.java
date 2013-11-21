@@ -53,6 +53,8 @@ public class MainActivity extends FragmentActivity {
 	public static final int MODE_EDITOR_CHOICE = 1;
 	public static final int MODE_YOUR_CHANNEL = 2;
 
+	private static int INIT_FLAG = -1;
+
 	private ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerListView;
@@ -62,6 +64,8 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		INIT_FLAG = 1;
 
 		UserLoginHelper login = new UserLoginHelper(this);
 		if (savedInstanceState == null && !login.getUserName().isEmpty()) {
@@ -447,4 +451,7 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
+	public static int getInitFlag() {
+		return INIT_FLAG;
+	}
 }

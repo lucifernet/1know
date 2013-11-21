@@ -9,6 +9,7 @@ import tw.com.ischool.oneknow.R;
 import tw.com.ischool.oneknow.main.MainActivity;
 import tw.com.ischool.oneknow.model.Knowledge;
 import tw.com.ischool.oneknow.model.OnReceiveListener;
+import tw.com.ischool.oneknow.util.ActivityHelper;
 import tw.com.ischool.oneknow.util.JSONUtil;
 import tw.com.ischool.oneknow.util.StringUtil;
 import android.annotation.SuppressLint;
@@ -89,6 +90,8 @@ public class StudyActivity extends YouTubeBaseActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_study);
 
+		new ActivityHelper(this).valid();
+		
 		getActionBar().setDisplayShowHomeEnabled(false);
 
 		mProgress = (LinearLayout) this.findViewById(R.id.layoutProgress);
