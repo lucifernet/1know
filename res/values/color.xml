@@ -7,10 +7,15 @@
     <color name="blue">#0000FF</color>
     <color name="black">#000000</color>
     <color name="green">#00FF00</color>
+    <color name="darkgreen">#178951</color>
     <color name="red">#FF0000</color>
     <color name="unit_selected">#AFD6FF</color>
     <color name="unit_chapter">#E0E0E0</color>
-    <color name="gridBackgroundColor">#EBFFEB</color>
+    <color name="gridBackgroundColor">#EAEAEA</color>
     <color name="note_font_color">#DCDCDC</color>
 	<color name="note_background">#CC000000</color>
+	<color name="know_name_gray">#484848</color>
+	<color name="author_gray">#979797</color>
+	<color name="actionbar_background">#6dabe3</color>
+	<color name="actionbar_tab_selected">#629acc</color>
 </resources>

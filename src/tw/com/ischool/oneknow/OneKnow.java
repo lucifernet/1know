@@ -9,14 +9,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import tw.com.ischool.oneknow.util.HttpUtil;
+import tw.com.ischool.oneknow.util.StringUtil;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class OneKnow {
 	public static final String TAG_ONE_KNOW = "OneKnow";
-	
+
 	private static final String ERROR_TITLE = "<title>We're sorry, but something went wrong (500)</title>";
-	
+
 	public static final String DOMAIN = "1know.net";
 	public static final String URL = "http://1know.net/";
 	public static final String URL_IMAGE = "assets/catch_images/";
@@ -32,11 +33,12 @@ public class OneKnow {
 	public static final String SERVICE_UNIT_NOTES = "v2/learning/units/%s/notes";
 	public static final String SERVICE_NOTE_UPDATE = "v2/learning/notes/%s";
 	public static final String SERVICE_STUDY_ACTIVITY = "v2/learning/%s/studyActivity?days=%s&timezone=%s";
-	public static final String SERVICE_KNOW_UNSUBSCRIBE = "v2/learning/%s/unsubscribe";		
+	public static final String SERVICE_KNOW_UNSUBSCRIBE = "v2/learning/%s/unsubscribe";
 	public static final String SERVICE_YOUR_NOTES = "v2/learning/notes";
 	public static final String SERVICE_STUDY_QUIZ = "v2/learning/units/%s/quizzes";
 	public static final String SERVICE_STUDY_RESULT = "v2/learning/units/%s/studyResult";
-	public static final String SERVICE_GET_UNIT = "v2/learning/units/%s"; 
+	public static final String SERVICE_GET_UNIT = "v2/learning/units/%s";
+	public static final String SERVICE_SUBSCRIBE = "v2/learning/%s/subscribe";
 
 	public static <T> T getFrom(String serviceName,
 			HashMap<String, String> params, Class<T> typeClass)
@@ -81,7 +83,11 @@ public class OneKnow {
 		HttpUtil http = HttpUtil.createInstanceWithCookie();
 		StringBuilder sb = new StringBuilder(URL).append(serviceName);
 
-		String result = http.postForString(sb.toString(), req.toString(2));
+		String content = StringUtil.EMPTY;
+		if (req != null)
+			content = req.toString();
+
+		String result = http.postForString(sb.toString(), content);
 
 		if (typeClass.getName().equals(Void.class.getName())) {
 			return null;

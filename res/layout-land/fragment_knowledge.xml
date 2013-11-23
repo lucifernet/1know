@@ -2,15 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gridBackgroundColor"
     android:orientation="horizontal" >
 
     <GridView
         android:id="@+id/lvKnowledge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="220dp"
-        android:horizontalSpacing="@dimen/activity_vertical_margin"
-        android:numColumns="2"  android:background="@color/gridBackgroundColor"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/gridBackgroundColor"
+        android:columnWidth="110dp"
+        android:horizontalSpacing="8dp"
+        android:numColumns="4"
         android:verticalSpacing="@dimen/activity_vertical_margin" />
 
     <LinearLayout

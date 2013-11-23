@@ -12,6 +12,7 @@
     <string name="item_sep_learning">Learning</string>
     <string name="item_your_knowledge">Your Knowledges</string>
     <string name="item_your_notes">Your Notes</string>
+    <string name="item_subscribe">Subscribe</string>
     <string name="item_your_activity">Your Activities</string>
     <string name="item_sep_channel">Channel</string>
     <string name="item_discover">Discover Knowledge</string>
@@ -39,7 +40,6 @@
     <string name="error_incorrect_password">Incorrect UserName or Password.</string>
     <string name="invalid_password_characters">Invalid password characters</string>
     <string name="something_went_wrong">Something went wrong!</string>
-    <string name="subscribe">subscribe</string>
     <string name="subscribed">subscribed</string>
     <string name="New">New</string>
     <string name="seconds_ago">%s seconds ago</string>
@@ -131,4 +131,14 @@
     <string name="qa_save_completed">Answer completed</string>
     <string name="qa_save_error">Answer failure : %s</string>
 
+    <!-- Subscribe fragment below -->
+    <string name="subscribe_by_code_desc">You can subscribe knowledge by Knowledge Code.</string>
+    <string name="subscribe_by_code">Knowledge Code Here</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscribe_or">Or</string>
+	<string name="subscribe_by_qr_code">Subscribe by QRCode</string>
+	<string name="subscribe_empty_code">Knowledge Code can not be empty.</string>
+	<string name="subscribe_error">Subscribe failure : %s</string>
+	<string name="subscribe_succeed">Subscribe successful.</string>
+	<string name="subscribe_invalid_qrcode">Invalid QRCode</string>
 </resources>

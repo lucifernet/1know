@@ -21,6 +21,7 @@ import tw.com.ischool.oneknow.model.OnKnowledgeReceiveListener;
 import tw.com.ischool.oneknow.study.StudyActivity;
 import tw.com.ischool.oneknow.util.CircleProgressBar;
 import tw.com.ischool.oneknow.util.StringUtil;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +56,6 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
 		mKnows = new KnowDataSource(getActivity());
 
 		View view = inflater.inflate(R.layout.fragment_knowledge, container,
@@ -88,15 +87,17 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 		}
 
 		IntentFilter filter = new IntentFilter(UpdateChannelService.ACTION);
-
 		this.getActivity().registerReceiver(mReceiver, filter);
+
+		filter = new IntentFilter(SubscribeFragment.ACTION_SUBSCRIBE);
+		this.getActivity().registerReceiver(mSubscribeReceiver, filter);
 	}
 
 	@Override
 	public void onStop() {
 		mKnows.close();
 		this.getActivity().unregisterReceiver(mReceiver);
-
+		this.getActivity().unregisterReceiver(mSubscribeReceiver);
 		super.onStop();
 	}
 
@@ -151,23 +152,12 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 					.findViewById(R.id.txtKnowName);
 			TextView txtLastView = (TextView) convertView
 					.findViewById(R.id.txtLastViewTime);
-			CircleProgressBar progStudy = (CircleProgressBar) convertView
-					.findViewById(R.id.progressStudy);
-
+			
 			Knowledge know = mKnowList.get(position);
 
 			txtKnowName.setText(know.getName());
-
+			
 			handleLastViewTime(know.getLastViewTime(), txtLastView);
-
-			progStudy.setMaxProgressColor(Color.GRAY);
-			progStudy.setProgressColor(Color.RED);
-			progStudy.setStrokeWidth(10);
-			progStudy.setMaxProgress(know.getTotalTime());
-			progStudy.setProgress(know.getGainedTime());
-
-			// txtSubCount.setText(String.valueOf(know.getReader()));
-			// rating.setRating(know.getRating());
 
 			Bitmap cacheImage = know.getCachedLogoBitmap(getActivity());
 			if (cacheImage != null) {
@@ -267,6 +257,13 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 			bindData();
 		}
 
+	};
+
+	private BroadcastReceiver mSubscribeReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			reload();
+		}
 	};
 
 	@Override

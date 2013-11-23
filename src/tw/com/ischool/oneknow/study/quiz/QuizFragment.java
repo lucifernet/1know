@@ -509,6 +509,7 @@ public class QuizFragment extends Fragment implements IUnitPlayerHandler {
 		}
 	}
 
+	
 	@Override
 	public boolean handleBackPressed() {
 		return false;

@@ -16,14 +16,14 @@ import tw.com.ischool.oneknow.login.UserLoginHelper.OnLoginResultListener;
 import tw.com.ischool.oneknow.main.IReloadable.OnReloadCompletedListener;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.Activity;
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,8 +38,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentActivity;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends Activity {
 
 	private static OrientationEnum ORIENTATION;
 	private static boolean IsLogined;
@@ -143,8 +145,8 @@ public class MainActivity extends FragmentActivity {
 		// Handle your other action bar items...
 
 		if (item.getItemId() == R.id.reload) {
-			Fragment fragment = this.getSupportFragmentManager()
-					.findFragmentById(R.id.content_frame);
+			Fragment fragment = this.getFragmentManager().findFragmentById(
+					R.id.content_frame);
 			if (fragment != null && fragment instanceof IReloadable) {
 
 				LayoutInflater inflater = (LayoutInflater) this
@@ -287,9 +289,8 @@ public class MainActivity extends FragmentActivity {
 			this.renderTabs(position);
 			break;
 		case R.string.item_your_channel:
-
 			this.renderTabs(position);
-			break;
+			break;		
 		case R.string.item_login:
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivityForResult(intent, REQUEST_CODE_LOGIN);
@@ -323,7 +324,12 @@ public class MainActivity extends FragmentActivity {
 		if (item.getGroup() == ItemProvider.GROUP_NONE)
 			return;
 
-		List<BaseItem> items = ItemProvider.getItems(item.getGroup());
+		if (item.getSortInGroup() == BaseItem.SORT_NO_TAB){
+			setTitle(item.getTitle());
+			return;
+		}
+
+		List<BaseItem> items = ItemProvider.getTabItems(item.getGroup());
 		if (items.size() > 1) {
 			for (BaseItem it : items) {
 				if (it.getStatus().isMember(DisplayStatus.LOGINED)
@@ -333,10 +339,12 @@ public class MainActivity extends FragmentActivity {
 				Tab tab = bar.newTab().setText(it.getTitle())
 						.setIcon(it.getIcon())
 						.setTabListener(new MyTabListener(it));
+				
 				bar.addTab(tab);
 			}
 
-			bar.setSelectedNavigationItem(item.getSortInGroup());
+			if (bar.getTabCount() > 0)
+				bar.setSelectedNavigationItem(item.getSortInGroup());
 		}
 	}
 
@@ -356,7 +364,7 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
-			setTitle(tab.getText());
+			setTitle(ItemProvider.getGroupTitleId(_item));
 
 			MainCurrentIndex = ItemProvider.findItemIndex(_item.getClass());
 			if (_item.getFragmentClass() != null)
@@ -372,7 +380,7 @@ public class MainActivity extends FragmentActivity {
 	private void deployFragment(String className) {
 		// TODO
 		mCurrentFragment = Fragment.instantiate(this, className);
-		this.getSupportFragmentManager().beginTransaction()
+		this.getFragmentManager().beginTransaction()
 				.replace(R.id.content_frame, mCurrentFragment, className)
 				.commitAllowingStateLoss();
 

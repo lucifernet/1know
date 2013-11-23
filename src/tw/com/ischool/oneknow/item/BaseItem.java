@@ -10,6 +10,8 @@ public abstract class BaseItem {
 	protected int _sortInGroup;
 	protected Class<?> _fragmentClass;
 
+	public static final int SORT_NO_TAB = -1;
+	
 	protected void init(int title, int icon, DisplayStatus status, int group,
 			int sortInGroup, Class<?> fragmentClass) {
 		_title = title;
