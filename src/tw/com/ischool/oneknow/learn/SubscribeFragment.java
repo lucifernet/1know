@@ -24,7 +24,7 @@ public class SubscribeFragment extends Fragment {
 
 	private Activity mActivity;
 	private FrameLayout mProgress;
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -39,9 +39,9 @@ public class SubscribeFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_subscribe, container,
 				false);
 
-		mProgress = (FrameLayout)view.findViewById(R.id.progress);
+		mProgress = (FrameLayout) view.findViewById(R.id.progress);
 		mProgress.setVisibility(View.GONE);
-		
+
 		Button btnQR = (Button) view.findViewById(R.id.btnQRCode);
 		btnQR.setOnClickListener(new OnClickListener() {
 
@@ -73,10 +73,11 @@ public class SubscribeFragment extends Fragment {
 			public void onClick(View v) {
 				editKnowCode.setError(null);
 				mProgress.setVisibility(View.VISIBLE);
-				
+
 				if (editKnowCode.length() == 0) {
 					String error = getString(R.string.subscribe_empty_code);
 					editKnowCode.setError(error);
+					mProgress.setVisibility(View.GONE);
 					return;
 				}
 

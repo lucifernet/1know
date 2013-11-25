@@ -134,11 +134,12 @@
     <!-- Subscribe fragment below -->
     <string name="subscribe_by_code_desc">You can subscribe knowledge by Knowledge Code.</string>
     <string name="subscribe_by_code">Knowledge Code Here</string>
-    <string name="subscribe">Subscribe</string>
-    <string name="subscribe_or">Or</string>
+    <string name="subscribe">SUBSCRIBE</string>
+    <string name="subscribe_or">OR</string>
 	<string name="subscribe_by_qr_code">Subscribe by QRCode</string>
 	<string name="subscribe_empty_code">Knowledge Code can not be empty.</string>
 	<string name="subscribe_error">Subscribe failure : %s</string>
 	<string name="subscribe_succeed">Subscribe successful.</string>
 	<string name="subscribe_invalid_qrcode">Invalid QRCode</string>
+	<string name="subscribe_scan_qr_code">SCAN QR CODE</string>
 </resources>

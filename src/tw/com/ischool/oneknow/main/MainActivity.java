@@ -311,10 +311,10 @@ public class MainActivity extends Activity {
 	}
 
 	private void renderTabs(int position) {
-		ActionBar bar = this.getActionBar();
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		ActionBar bar = this.getActionBar();		
 		bar.removeAllTabs();
-
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		
 		BaseItem item = ItemProvider.getItem(position);
 
 		if (item.getFragmentClass() != null) {
@@ -329,6 +329,8 @@ public class MainActivity extends Activity {
 			return;
 		}
 
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
 		List<BaseItem> items = ItemProvider.getTabItems(item.getGroup());
 		if (items.size() > 1) {
 			for (BaseItem it : items) {
