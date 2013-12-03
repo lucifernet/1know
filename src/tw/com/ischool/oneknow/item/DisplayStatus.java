@@ -1,18 +1,24 @@
-package tw.com.ischool.oneknow.learn;
+package tw.com.ischool.oneknow.item;
 
-public class DisplayStatus {
+import java.io.Serializable;
+
+public class DisplayStatus implements Serializable{
 	// NORMAL(2), SEPARATION(3), LOGINED(5), UNLOGIN(7);
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final DisplayStatus NORMAL;
-	public static final DisplayStatus SEPARATION;
+	//public static final DisplayStatus SEPARATION;
 	public static final DisplayStatus LOGINED;
-	public static final DisplayStatus UNLOGIN;
+	public static final DisplayStatus GUEST;
 
 	static {
 		NORMAL = new DisplayStatus(2);
-		SEPARATION = new DisplayStatus(3);
+		//SEPARATION = new DisplayStatus(3);
 		LOGINED = new DisplayStatus(5);
-		UNLOGIN = new DisplayStatus(7);
+		GUEST = new DisplayStatus(7);
 	}
 
 	private int _value;

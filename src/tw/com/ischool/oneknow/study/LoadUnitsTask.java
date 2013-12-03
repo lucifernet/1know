@@ -30,7 +30,7 @@ public class LoadUnitsTask extends AsyncTask<String, Void, JSONArray> {
 			mListener.onReceive(result);
 		} else if (mException != null && mListener != null) {
 			mListener.onError(mException);
-		}
+		}		
 	}
 
 	public void setOnReceiveListener(OnReceiveListener<JSONArray> listener) {

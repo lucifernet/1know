@@ -1,6 +1,5 @@
 package tw.com.ischool.oneknow.learn;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,7 +13,7 @@ import tw.com.ischool.oneknow.main.ISearchable;
 import tw.com.ischool.oneknow.model.Knowledge;
 import tw.com.ischool.oneknow.model.OnReceiveListener;
 import tw.com.ischool.oneknow.model.parser.YourKnowledgeParser;
-import tw.com.ischool.oneknow.study.StudyActivity;
+import tw.com.ischool.oneknow.study.UnitStudyActivity;
 import tw.com.ischool.oneknow.util.JSONUtil;
 import tw.com.ischool.oneknow.util.ScreenHelper;
 import tw.com.ischool.oneknow.util.StringUtil;
@@ -42,12 +41,13 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 	public static final int CODE_PLAY = 285;
 	private LinearLayout mContainer;
 	private LinearLayout mProgress;
-	private OnSearchListener mSearchListener;
+	// private OnSearchListener mSearchListener;
 	private OnReloadCompletedListener mReloadListener;
 	// private JSONArray mJSONArray;
 	private List<JSONObject> mJSONObjects;
+	private List<JSONObject> mOriJSONObjects;
 
-	private String mKeyword;
+	// private String mKeyword;
 	private Activity mActivity;
 
 	@Override
@@ -70,28 +70,28 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 
 		mActivity = getActivity();
 
-		if (StringUtil.isNullOrWhitespace(mKeyword)) {
-			reload();
-		}
+		// if (StringUtil.isNullOrWhitespace(mKeyword)) {
+		reload();
+		// }
 	}
 
-	@Override
-	public void setOnSearchListener(OnSearchListener listener) {
-		mSearchListener = listener;
-	}
+	// @Override
+	// public void setOnSearchListener(OnSearchListener listener) {
+	// mSearchListener = listener;
+	// }
 
 	@Override
 	public void search(String keyword) {
-		mKeyword = keyword.toLowerCase(Locale.getDefault());
+		keyword = keyword.toLowerCase(Locale.getDefault());
 
 		// TODO
-		ArrayList<JSONObject> jsons = new ArrayList<JSONObject>();
-		for (JSONObject json : mJSONObjects) {
+		mJSONObjects.clear();
+		for (JSONObject json : mOriJSONObjects) {
 			String content = JSONUtil.getString(json, "content").toLowerCase(
 					Locale.getDefault());
 
 			if (content.contains(keyword)) {
-				jsons.add(json);
+				mJSONObjects.add(json);
 				continue;
 			}
 
@@ -99,7 +99,7 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 			String knowName = JSONUtil.getString(knowObject, "name")
 					.toLowerCase(Locale.getDefault());
 			if (knowName.contains(keyword)) {
-				jsons.add(json);
+				mJSONObjects.add(json);
 				continue;
 			}
 
@@ -107,16 +107,23 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 			String unitName = JSONUtil.getString(unitObject, "name")
 					.toLowerCase(Locale.getDefault());
 			if (unitName.contains(keyword)) {
-				jsons.add(json);
+				mJSONObjects.add(json);
 				continue;
 			}
 		}
 
-		mJSONObjects = jsons;
 		bindData();
 
-		if (mSearchListener != null)
-			mSearchListener.onSearchCompleted(jsons.size());
+		// if (mSearchListener != null)
+		// mSearchListener.onSearchCompleted(jsons.size());
+	}
+
+	@Override
+	public void cancelSearch() {
+		mJSONObjects.clear();
+		mJSONObjects.addAll(mOriJSONObjects);
+		bindData();
+
 	}
 
 	@Override
@@ -128,16 +135,17 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 			@Override
 			public void onReceive(JSONArray result) {
 				mJSONObjects = JSONUtil.getJSONObjects(result);
+				mOriJSONObjects = JSONUtil.getJSONObjects(result);
 
-				if (mSearchListener != null
-						&& StringUtil.isNullOrWhitespace(mKeyword)) {
-					mSearchListener.onDataReady();
-				}
+				// if (mSearchListener != null
+				// && StringUtil.isNullOrWhitespace(mKeyword)) {
+				// mSearchListener.onDataReady();
+				// }
 
-				if(!StringUtil.isNullOrWhitespace(mKeyword)){
-					search(mKeyword);
-				}
-				
+				// if(!StringUtil.isNullOrWhitespace(mKeyword)){
+				// search(mKeyword);
+				// }
+
 				bindData();
 				mProgress.setVisibility(View.GONE);
 
@@ -228,7 +236,8 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 
 			// 補上時間
 			int time = JSONUtil.getInt(json, "time");
-			String displayTime = StudyActivity.getDisplayTime(mActivity, time);
+			String displayTime = UnitStudyActivity.getDisplayTime(mActivity,
+					time);
 			TextView txtTime = new TextView(mActivity);
 			txtTime.setText(displayTime);
 			txtTime.setMaxLines(1);
@@ -317,15 +326,18 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 
 					mProgress.setVisibility(View.GONE);
 
-					Intent intent = new Intent(mActivity, StudyActivity.class);
-					intent.putExtra(StudyActivity.PARAM_KNOW, k);
+					Intent intent = new Intent(mActivity,
+							UnitStudyActivity.class);
+					intent.putExtra(UnitStudyActivity.PARAM_KNOW, k);
 
 					if (_level > 0)
-						intent.putExtra(StudyActivity.PARAM_TARGET_UNIT_UQID,
+						intent.putExtra(
+								UnitStudyActivity.PARAM_TARGET_UNIT_UQID,
 								unitUqid);
 
 					if (_level > 1)
-						intent.putExtra(StudyActivity.PARAM_TARGET_TIME, time);
+						intent.putExtra(UnitStudyActivity.PARAM_TARGET_TIME,
+								time);
 
 					startActivityForResult(intent, CODE_PLAY);
 				}

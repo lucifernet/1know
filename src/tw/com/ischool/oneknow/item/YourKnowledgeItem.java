@@ -1,13 +1,11 @@
 package tw.com.ischool.oneknow.item;
 
 import tw.com.ischool.oneknow.R;
-import tw.com.ischool.oneknow.learn.DisplayStatus;
-import tw.com.ischool.oneknow.learn.YourKnowFragment;
+import tw.com.ischool.oneknow.learn.YourKnowsFragment;
 
-public class YourKnowledgeItem extends BaseItem {
+public class YourKnowledgeItem extends FragmentItem {
 	public YourKnowledgeItem() {
-		super.init(R.string.item_your_knowledge,
-				R.drawable.your_know, DisplayStatus.LOGINED,
-				ItemProvider.GROUP_LEARNING, 0, YourKnowFragment.class);
+		super.init(R.string.item_your_knowledge, R.drawable.ic_knowledge,
+				DisplayStatus.LOGINED, YourKnowsFragment.class);
 	}
 }

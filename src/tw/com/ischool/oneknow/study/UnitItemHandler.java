@@ -64,4 +64,29 @@ public class UnitItemHandler {
 		}
 		return -1;
 	}
+
+	public ArrayList<UnitItem> getSelectableItems() {
+		ArrayList<UnitItem> items = new ArrayList<UnitItem>();
+
+		for (UnitItem item : _items) {
+			if (item.getMode() == UnitItem.MODE_CHAPTER)
+				continue;
+			items.add(item);
+		}
+
+		return items;
+	}
+
+	public int getSelectableIndex(UnitItem item) {
+		int index = -1;
+		for (UnitItem it : _items) {
+			if (item.getMode() == UnitItem.MODE_CHAPTER)
+				continue;
+
+			index += 1;
+			if (item == it)
+				break;
+		}
+		return index;
+	}
 }

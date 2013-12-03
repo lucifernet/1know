@@ -1,0 +1,50 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_add_notes"
+        android:icon="@drawable/ic_note"
+        android:orderInCategory="3"
+        android:showAsAction="always"
+        android:title="@string/study_add_notes"/>
+    <item
+        android:id="@+id/action_fullscreen"
+        android:icon="@drawable/ic_fullscreen"
+        android:orderInCategory="4"
+        android:showAsAction="always"
+        android:title="@string/study_fullscreen"/>
+    <item
+        android:id="@+id/action_previous"
+        android:orderInCategory="1"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_left"
+        android:title="@string/study_prev_unit"/>
+    <item
+        android:id="@+id/action_next"
+        android:orderInCategory="2"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_right"
+        android:title="@string/study_next_unit"/>
+    <item
+        android:id="@+id/action_view_notes"
+        android:orderInCategory="5"
+        android:showAsAction="never"
+        android:title="@string/study_view_notes"/>
+    <item
+        android:id="@+id/action_material"
+        android:orderInCategory="6"
+        android:showAsAction="never"
+        android:title="@string/study_material"/>
+    <item
+        android:id="@+id/action_view_detail"
+        android:orderInCategory="7"
+        android:showAsAction="never"
+        android:title="@string/study_view_detail"/>
+    <item
+        android:id="@+id/action_completed"
+        android:checkable="true"
+        android:checked="true"
+        android:orderInCategory="8"
+        android:showAsAction="never"
+        android:title="@string/study_completed"/>
+
+</menu>

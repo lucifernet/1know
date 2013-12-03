@@ -1,12 +1,7 @@
 package tw.com.ischool.oneknow.item;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import tw.com.ischool.oneknow.R;
-import tw.com.ischool.oneknow.learn.DisplayStatus;
 
 public class ItemProvider {
 
@@ -19,98 +14,54 @@ public class ItemProvider {
 
 	static {
 		sItems = new ArrayList<BaseItem>();
-
-		sItems.add(new Item(R.string.item_login,
-				android.R.drawable.ic_menu_agenda, DisplayStatus.UNLOGIN,
-				GROUP_NONE, 0, null));
-		// sItems.add(new Item(R.string.item_profile,
-		// android.R.drawable.ic_input_add, DisplayStatus.LOGINED,
-		// GROUP_NONE, 0, null));
-		sItems.add(new Item(R.string.item_logout,
-				android.R.drawable.ic_menu_myplaces, DisplayStatus.LOGINED,
-				GROUP_NONE, 0, null));
-		sItems.add(new Item(R.string.item_sep_learning,
-				android.R.drawable.ic_menu_set_as, DisplayStatus.combine(
-						DisplayStatus.SEPARATION, DisplayStatus.LOGINED),
-				GROUP_LEARNING, BaseItem.SORT_NO_TAB, null));
-		sItems.add(new YourKnowledgeItem());
-		sItems.add(new YourNotesItem());
+		sItems.add(new ProfilerItem());
+		sItems.add(new LoginItem());
+		sItems.add(new SwitchGuestItem());
+		sItems.add(new LogoutItem());
+		sItems.add(new LearningItem());
 		sItems.add(new SubscribeItem());
-		// sItems.add(new Item(R.string.item_your_activity,
-		// android.R.drawable.ic_menu_myplaces, DisplayStatus.LOGINED,
-		// GROUP_LEARNING, 2, null));
-		// sItems.add(new Item(R.string.item_sep_channel,
-		// android.R.drawable.ic_menu_myplaces, DisplayStatus.SEPARATION,
-		// GROUP_NONE, 0, null));
-		// sItems.add(new DiscoverItem());
-		// sItems.add(new Item(R.string.item_editor_choice,
-		// android.R.drawable.ic_menu_myplaces, DisplayStatus.NORMAL,
-		// GROUP_CHANNEL, 1, DiscoverFragment.class));
-		// sItems.add(new Item(R.string.item_your_channel,
-		// android.R.drawable.ic_menu_myplaces, DisplayStatus.LOGINED,
-		// GROUP_CHANNEL, 2, DiscoverFragment.class));
 	}
 
 	public static BaseItem getItem(int position) {
 		return sItems.get(position);
 	}
 
-	public static List<BaseItem> getItems() {
-		return sItems;
-	}
+	// public static List<BaseItem> getItems() {
+	// return sItems;
+	// }
 
-	public static List<BaseItem> getTabItems(int group) {
+	public static List<BaseItem> getItems(DisplayStatus... condition) {
 		ArrayList<BaseItem> items = new ArrayList<BaseItem>();
 
 		for (BaseItem item : sItems) {
-			if (item.getSortInGroup() == BaseItem.SORT_NO_TAB)
-				continue;
+			boolean match = true;
 
-			if (item.getGroup() == group)
+			if (condition != null) {
+				for (DisplayStatus status : condition) {
+					if (item.getStatus() == DisplayStatus.NORMAL)
+						continue;
+
+					if (!item.getStatus().isMember(status)) {
+						match = false;
+						continue;
+					}
+				}
+			}
+			if (match)
 				items.add(item);
 		}
-
-		Collections.sort(items, new Comparator<BaseItem>() {
-
-			@Override
-			public int compare(BaseItem item1, BaseItem item2) {
-				if (item1.getSortInGroup() > item2.getSortInGroup())
-					return 1;
-				if (item1.getSortInGroup() < item2.getSortInGroup())
-					return -1;
-				return 0;
-			}
-		});
 
 		return items;
 	}
 
-	public static <T extends BaseItem> int findItemIndex(Class<T> type) {
-		int i = 0;
-		for (BaseItem item : sItems) {
-			if (type.isInstance(item)) {
+	public static int findIndex(List<BaseItem> itemList, Class<?> class1) {
+
+		for (int i = 0; i < itemList.size(); i++) {
+			BaseItem item = itemList.get(i);
+			if (class1.isInstance(item))
 				return i;
-			}
-			i++;
 		}
 
 		return -1;
 	}
-
-	public static int getGroupTitleId(BaseItem item) {
-		if (item.getStatus().isMember(DisplayStatus.SEPARATION))
-			return item.getTitle();
-
-		if(item.getSortInGroup() == BaseItem.SORT_NO_TAB)
-			return item.getTitle();
-		
-		for (BaseItem it : sItems) {
-			if (it.getGroup() != item.getGroup())
-				continue;
-			if (it.getStatus().isMember(DisplayStatus.SEPARATION))
-				return it.getTitle();
-		}
-		return item.getTitle();
-	}
-
 }

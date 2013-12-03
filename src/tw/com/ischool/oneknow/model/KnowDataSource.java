@@ -129,7 +129,7 @@ public class KnowDataSource {
 				KnowDBHelper.COLUMN_APPROVE_CODE, KnowDBHelper.COLUMN_RATING,
 				KnowDBHelper.COLUMN_TOTAL_TIME,
 				KnowDBHelper.COLUMN_GAINED_TIME, KnowDBHelper.COLUMN_LOGO,
-				KnowDBHelper.COLUMN_PAGE, KnowDBHelper.COLUMN_FINISH_COUNT };
+				KnowDBHelper.COLUMN_PAGE, KnowDBHelper.COLUMN_FINISH_COUNT, KnowDBHelper.COLUMN_LAST_VIEW_TIME };
 
 		String selection = KnowDBHelper.COLUMN_SUBSCRIBED + "=?";
 		String[] selectionArgs = new String[] { "1" };
@@ -150,6 +150,7 @@ public class KnowDataSource {
 			k.setLogo(c.getString(7));
 			k.setPage(c.getString(8));
 			k.setFinishCount(c.getInt(9));
+			k.setLastViewTime(c.getString(10));
 			k.setSubscribed(true);
 			knows.add(k);
 		}

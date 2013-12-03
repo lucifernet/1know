@@ -19,9 +19,9 @@
         android:label="@string/app_name"
         android:theme="@style/CustomActionBarTheme" >
         <activity
-            android:name="tw.com.ischool.oneknow.main.MainActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/app_name" >
+            android:name="tw.com.ischool.oneknow.main.MainActivity"           
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
             <intent-filter android:icon="@drawable/ic_1know" >
                 <action android:name="android.intent.action.MAIN" />
 
@@ -91,6 +91,12 @@
         <activity
             android:name="tw.com.ischool.oneknow.study.poll.PollActivity"
             android:label="@string/title_activity_poll" >
+        </activity>
+        <activity
+            android:name="tw.com.ischool.oneknow.study.UnitStudyActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_unit_study"
+            android:screenOrientation="landscape" >
         </activity>
     </application>
 

@@ -10,6 +10,7 @@ import java.net.URLConnection;
 
 import tw.com.ischool.oneknow.R;
 import tw.com.ischool.oneknow.main.MainActivity;
+import tw.com.ischool.oneknow.util.CacheHelper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,11 +33,12 @@ public class KnowImageTask extends AsyncTask<Void, Integer, Bitmap> {
 	@Override
 	protected Bitmap doInBackground(Void... params) {
 		this.publishProgress(0);
-		File dir = mContext.getExternalCacheDir();
-		File imgDir = new File(dir, "images");
-		File file = new File(imgDir, mKnowledge.getLogoFileName());
-
-		imgDir.mkdirs();
+//		File dir = mContext.getExternalCacheDir();
+//		File imgDir = new File(dir, "images");
+//		File file = new File(imgDir, mKnowledge.getLogoFileName());
+		File file = CacheHelper.getCacheFullFileName(mContext, mKnowledge.getLogoFileName());
+		
+//		imgDir.mkdirs();
 
 		if (!file.exists()) {
 

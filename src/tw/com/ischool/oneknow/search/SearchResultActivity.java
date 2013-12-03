@@ -1,24 +1,18 @@
 package tw.com.ischool.oneknow.search;
 
 import tw.com.ischool.oneknow.R;
-import tw.com.ischool.oneknow.item.BaseItem;
-import tw.com.ischool.oneknow.item.ItemProvider;
-import tw.com.ischool.oneknow.main.ISearchable;
-import tw.com.ischool.oneknow.main.ISearchable.OnSearchListener;
-import tw.com.ischool.oneknow.main.MainActivity;
+import tw.com.ischool.oneknow.item.FragmentItem;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.widget.TextView;
 
 public class SearchResultActivity extends FragmentActivity {
 
 	private TextView mTxtTitle;
-	private BaseItem mSelectedItem;
+	private FragmentItem mSelectedItem;
 	private TextView mTxtCount;
 	private String mKeyword;
 
@@ -28,7 +22,7 @@ public class SearchResultActivity extends FragmentActivity {
 		setContentView(R.layout.activity_search_result);
 
 		mTxtTitle = (TextView) this.findViewById(R.id.search_title);
-		mSelectedItem = ItemProvider.getItem(MainActivity.getCurrentIndex());
+//		mSelectedItem = MainActivity.get
 		mTxtTitle.setText(mSelectedItem.getTitle());
 
 		mTxtCount = (TextView) this.findViewById(R.id.search_result_count);
@@ -45,6 +39,7 @@ public class SearchResultActivity extends FragmentActivity {
 	}
 
 	private void handleIntent(Intent intent) {
+		
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			mKeyword = intent.getStringExtra(SearchManager.QUERY);
 
@@ -53,30 +48,30 @@ public class SearchResultActivity extends FragmentActivity {
 			setTitle(title);
 		}
 
-		Fragment fragment = Fragment.instantiate(this, mSelectedItem
-				.getFragmentClass().getName());
-
-		FragmentManager fm = getSupportFragmentManager();
-		fm.beginTransaction().replace(R.id.search_container, fragment)
-				.commitAllowingStateLoss();
-
-		if (fragment instanceof ISearchable) {
-			final ISearchable searchable = (ISearchable) fragment;
-			searchable.setOnSearchListener(new OnSearchListener() {
-
-				@Override
-				public void onSearchCompleted(int count) {
-					String result = getString(R.string.search_result_count);
-					result = String.format(result, count);
-					mTxtCount.setText(result);
-				}
-
-				@Override
-				public void onDataReady() {
-					searchable.search(mKeyword);
-				}
-			});
-		}
+//		Fragment fragment = Fragment.instantiate(this, mSelectedItem
+//				.getFragmentClass().getName());
+//
+//		FragmentManager fm = getSupportFragmentManager();
+//		fm.beginTransaction().replace(R.id.search_container, fragment)
+//				.commitAllowingStateLoss();
+//
+//		if (fragment instanceof ISearchable) {
+//			final ISearchable searchable = (ISearchable) fragment;
+//			searchable.setOnSearchListener(new OnSearchListener() {
+//
+//				@Override
+//				public void onSearchCompleted(int count) {
+//					String result = getString(R.string.search_result_count);
+//					result = String.format(result, count);
+//					mTxtCount.setText(result);
+//				}
+//
+//				@Override
+//				public void onDataReady() {
+//					searchable.search(mKeyword);
+//				}
+//			});
+//		}
 	}
 
 	@Override

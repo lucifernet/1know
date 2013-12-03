@@ -9,7 +9,7 @@
     <string name="no">No</string>
     <string name="item_login">Login</string>
     <string name="item_profile">Profile</string>
-    <string name="item_sep_learning">Learning</string>
+    <string name="item_learning">Learning</string>
     <string name="item_your_knowledge">Your Knowledges</string>
     <string name="item_your_notes">Your Notes</string>
     <string name="item_subscribe">Subscribe</string>
@@ -18,6 +18,7 @@
     <string name="item_discover">Discover Knowledge</string>
     <string name="item_editor_choice">Editors\' Choice</string>
     <string name="item_your_channel">Your Channel</string>
+    <string name="item_switch">Switch Guest</string>
     <string name="item_sep_setup">Setup</string>
     <string name="item_logout">Logout</string>
     <string name="empty"></string>
@@ -53,13 +54,17 @@
     <string name="default_int">0</string>
     <string name="study_prev">PREV</string>
     <string name="study_next">NEXT</string>
+    <string name="study_prev_unit">Previous Unit</string>
+    <string name="study_next_unit">Next Unit</string>
     <string name="study_status_completed">COMPLETED</string>
     <string name="study_default_status">Course Progress</string>
     <string name="study_default_progress">0%</string>
     <string name="study_material">Materials</string>
     <string name="study_notes">Notes</string>
+    <string name="study_fullscreen">fullscreen</string>
     <string name="study_add_notes">Add new note</string>
     <string name="study_view_detail">Study History</string>
+    <string name="study_view_notes">View Notes</string>
     <string name="study_notes_loading">Loading notes&#8230;</string>
     <string name="study_autoplay">Autoplay</string>
     <string name="study_completed">Completed</string>
@@ -80,6 +85,10 @@
     <string name="title_activity_study">StudyActivity</string>
     <string name="title_activity_edit_note">EditNoteActivity</string>
     <string name="title_activity_know_info">KnowInfoActivity</string>
+
+    <!-- Alert -->
+    <string name="alert_title">Alert</string>
+    <string name="alert_internet_disconnect">Your internet status is disconnected. Do you want to open wireless settings ?</string>
 
     <!-- KnowInfoActivity below -->
     <string name="unsubscribe">unsubscribe</string>
@@ -136,10 +145,23 @@
     <string name="subscribe_by_code">Knowledge Code Here</string>
     <string name="subscribe">SUBSCRIBE</string>
     <string name="subscribe_or">OR</string>
-	<string name="subscribe_by_qr_code">Subscribe by QRCode</string>
-	<string name="subscribe_empty_code">Knowledge Code can not be empty.</string>
-	<string name="subscribe_error">Subscribe failure : %s</string>
-	<string name="subscribe_succeed">Subscribe successful.</string>
-	<string name="subscribe_invalid_qrcode">Invalid QRCode</string>
-	<string name="subscribe_scan_qr_code">SCAN QR CODE</string>
+    <string name="subscribe_by_qr_code">Subscribe by QRCode</string>
+    <string name="subscribe_empty_code">Knowledge Code can not be empty.</string>
+    <string name="subscribe_error">Subscribe failure : %s</string>
+    <string name="subscribe_succeed">Subscribe successful.</string>
+    <string name="subscribe_invalid_qrcode">Invalid QRCode</string>
+    <string name="subscribe_scan_qr_code">SCAN QR CODE</string>
+    <string name="title_activity_unit_study">UnitStudyActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- Switch User -->
+    <string name="switch_cancel">Cancel</string>
+    <string name="switch_confirm">Switch</string>
+	<string name="switch_message">Enter guest code : </string>
+	<string name="switch_hint">e.g.2a73fd30</string>
+	<string name="switch_failure">Switch failure:%s</string>
+	
+	<!-- Logout -->
+	<string name="logout_confirm">Do you want to logout ?</string>
 </resources>

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import tw.com.ischool.oneknow.R;
 import tw.com.ischool.oneknow.channel.UpdateChannelService;
@@ -18,7 +19,7 @@ import tw.com.ischool.oneknow.model.KnowImageTask.OnImageCompleteListener;
 import tw.com.ischool.oneknow.model.KnowImageTask.OnImageProgresListener;
 import tw.com.ischool.oneknow.model.Knowledge;
 import tw.com.ischool.oneknow.model.OnKnowledgeReceiveListener;
-import tw.com.ischool.oneknow.study.StudyActivity;
+import tw.com.ischool.oneknow.study.UnitStudyActivity;
 import tw.com.ischool.oneknow.util.CircleProgressBar;
 import tw.com.ischool.oneknow.util.StringUtil;
 import android.app.Fragment;
@@ -45,10 +46,9 @@ import android.widget.TextView;
 public class YourKnowFragment extends Fragment implements IReloadable,
 		ISearchable {
 
-	private OnSearchListener mSearchListener;
-	private String mKeyword;
 	private GridView mGridView;
 	private LinearLayout mProgress;
+	private ArrayList<Knowledge> mOriKnowList;
 	private ArrayList<Knowledge> mKnowList;
 	private OnReloadCompletedListener mListener;
 	private KnowDataSource mKnows;
@@ -74,16 +74,13 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 
 		mKnows.open();
 
-		if (StringUtil.isNullOrWhitespace(mKeyword)) {
-			mKnowList = mKnows.getYourKnowledges();
-
-			if (mKnowList.size() == 0) {
-				reload();
-			} else {
-				bindData();
-			}
+		mOriKnowList = mKnows.getYourKnowledges();
+		mKnowList = new ArrayList<Knowledge>(mOriKnowList);
+		
+		if (mKnowList.size() == 0) {
+			reload();
 		} else {
-			search(mKeyword);
+			bindData();
 		}
 
 		IntentFilter filter = new IntentFilter(UpdateChannelService.ACTION);
@@ -110,18 +107,15 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				Intent intent = new Intent(getActivity(), StudyActivity.class);
+				Intent intent = new Intent(getActivity(),
+						UnitStudyActivity.class);
 
 				Knowledge know = mKnowList.get(position);
-				intent.putExtra(StudyActivity.PARAM_KNOW, know);
+				intent.putExtra(UnitStudyActivity.PARAM_KNOW, know);
 				startActivity(intent);
 			}
 		});
 
-		// TODO
-		if (mSearchListener != null && StringUtil.isNullOrWhitespace(mKeyword)) {
-			mSearchListener.onDataReady();
-		}
 	}
 
 	private class KnowAdapter extends ArrayAdapter<Knowledge> {
@@ -152,11 +146,11 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 					.findViewById(R.id.txtKnowName);
 			TextView txtLastView = (TextView) convertView
 					.findViewById(R.id.txtLastViewTime);
-			
+
 			Knowledge know = mKnowList.get(position);
 
 			txtKnowName.setText(know.getName());
-			
+
 			handleLastViewTime(know.getLastViewTime(), txtLastView);
 
 			Bitmap cacheImage = know.getCachedLogoBitmap(getActivity());
@@ -164,11 +158,6 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 				imgKnow.setImageBitmap(cacheImage);
 				return convertView;
 			}
-
-			// if (Knowledge.loadLogoImage(getActivity(), know) != null) {
-			// imgKnow.setImageBitmap(know.getLogoBitmap());
-			// return convertView;
-			// }
 
 			KnowImageTask task = new KnowImageTask(getActivity(), know);
 			progImg.setVisibility(View.VISIBLE);
@@ -222,8 +211,12 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 			return;
 		}
 
+		TimeZone tz = TimeZone.getDefault();
+		int offsetFromUtc = tz.getOffset(d.getTime()) / (1000 * 60 * 60);
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(d);
+		cal.add(Calendar.HOUR, offsetFromUtc);
 
 		Calendar now = Calendar.getInstance();
 
@@ -292,27 +285,25 @@ public class YourKnowFragment extends Fragment implements IReloadable,
 
 	@Override
 	public void search(String keyword) {
-		mKeyword = keyword.toLowerCase(Locale.getDefault());
+		keyword = keyword.toLowerCase(Locale.getDefault());
 
-		ArrayList<Knowledge> knows = new ArrayList<Knowledge>();
+		mKnowList.clear();
 
-		for (Knowledge know : mKnows.getYourKnowledges()) {
+		for (Knowledge know : mOriKnowList) {
 			String name = know.getName().toLowerCase(Locale.getDefault());
 
-			if (name.contains(mKeyword)) {
-				knows.add(know);
+			if (name.contains(keyword)) {
+				mKnowList.add(know);
 			}
 		}
 
-		mKnowList = knows;
 		bindData();
-
-		if (mSearchListener != null)
-			mSearchListener.onSearchCompleted(knows.size());
 	}
 
 	@Override
-	public void setOnSearchListener(OnSearchListener listener) {
-		mSearchListener = listener;
+	public void cancelSearch() {
+		mKnowList.clear();
+		mKnowList.addAll(mOriKnowList);
+		bindData();
 	}
 }

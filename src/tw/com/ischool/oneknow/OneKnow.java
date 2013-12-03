@@ -21,6 +21,8 @@ public class OneKnow {
 	public static final String DOMAIN = "1know.net";
 	public static final String URL = "http://1know.net/";
 	public static final String URL_IMAGE = "assets/catch_images/";
+	public static final String SERVICE_ACCOUNT_USER = "account/user";
+	public static final String SERVICE_ACCOUNT_SWITCH = "account/switch";
 	public static final String SERVICE_LOGIN = "account/login";
 	public static final String SERVICE_LEARNING_KNOW = "v2/learning";
 	public static final String SERVICE_KNOW_INFO = "v2/learning/%s";
@@ -152,19 +154,51 @@ public class OneKnow {
 		StringBuilder sb = new StringBuilder(URL).append(serviceName).append(
 				"?");
 
-		int index = 0;
-		for (String key : params.keySet()) {
-			sb.append(key).append("=").append(params.get(key));
-			index++;
+		if (params != null) {
+			int index = 0;
+			for (String key : params.keySet()) {
+				sb.append(key).append("=").append(params.get(key));
+				index++;
 
-			if (index < params.size())
-				sb.append("&");
+				if (index < params.size())
+					sb.append("&");
+			}
 		}
-
+		
 		HttpUtil http = HttpUtil.createInstance();
 		String result = http.getString(sb.toString());
 		HttpUtil.setGlobalCookies(http.getHttpClient().getCookieStore());
 
+		Constructor<T> c;
+		try {
+			c = typeClass.getConstructor(String.class);
+			return c.newInstance(result);
+		} catch (Exception e) {
+			if (result.contains(ERROR_TITLE))
+				throw new OneKnowException("something went wrong");
+			else {
+				Log.e(TAG_ONE_KNOW,
+						"JSON parsing occured error because string is : "
+								+ result);
+				throw new JSONException("Unsupport type:" + typeClass.getName());
+			}
+		}
+	}
+
+	public static <T> T postAndSyncCookie(String serviceName,
+			JSONObject request, Class<T> typeClass)
+			throws ClientProtocolException, IOException, JSONException,
+			OneKnowException {
+		StringBuilder sb = new StringBuilder(URL).append(serviceName);
+
+		HttpUtil http = HttpUtil.createInstance();
+		String result = http.postForString(sb.toString(), request.toString());
+		HttpUtil.setGlobalCookies(http.getHttpClient().getCookieStore());
+
+		if (typeClass.getName().equals(Void.class.getName())) {
+			return null;
+		}
+		
 		Constructor<T> c;
 		try {
 			c = typeClass.getConstructor(String.class);

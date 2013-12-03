@@ -76,7 +76,7 @@ public class YoutubeVideoFragment extends Fragment implements
 				return false;
 			}
 		});
-
+		
 		return view;
 	}
 

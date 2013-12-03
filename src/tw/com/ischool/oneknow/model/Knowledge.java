@@ -1,15 +1,14 @@
 package tw.com.ischool.oneknow.model;
 
-import java.io.File;
 import java.io.Serializable;
 
 import org.json.JSONObject;
 
 import tw.com.ischool.oneknow.model.parser.KnowledgeParser;
+import tw.com.ischool.oneknow.util.CacheHelper;
 import tw.com.ischool.oneknow.util.StringUtil;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 public class Knowledge implements Serializable {
 	/**
@@ -144,12 +143,8 @@ public class Knowledge implements Serializable {
 	}
 
 	public Bitmap getCachedLogoBitmap(Context context) {
-		return Knowledge.loadLogoImage(context, this);
+		return CacheHelper.loadImage(context, this.getLogoFileName());
 	}
-
-	// public void setLogoBitmap(Bitmap logoBitmap) {
-	// mLogoBitmap = logoBitmap;
-	// }
 
 	public int getTotalTime() {
 		return mTotalTime;
@@ -191,23 +186,6 @@ public class Knowledge implements Serializable {
 		} catch (Exception e) {
 
 		}
-		return null;
-	}
-
-	public static Bitmap loadLogoImage(Context context, Knowledge knowledge) {
-		File dir = context.getExternalCacheDir();
-		File imgDir = new File(dir, "images");
-		File file = new File(imgDir, knowledge.getLogoFileName());
-
-		if (file.exists()) {
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-			Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
-					options);
-			// knowledge.setLogoBitmap(bitmap);
-			return bitmap;
-		}
-		// return knowledge.getLogoBitmap();
 		return null;
 	}
 
