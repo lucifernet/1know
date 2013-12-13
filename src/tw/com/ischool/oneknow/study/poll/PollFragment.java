@@ -151,13 +151,13 @@ public class PollFragment extends Fragment implements IUnitPlayerHandler {
 
 			@Override
 			public void onReceive(JSONObject result) {
-				String text = getString(R.string.poll_save_completed);
+				String text = mActivity.getString(R.string.poll_save_completed);
 				Toast.makeText(mActivity, text, Toast.LENGTH_SHORT).show();
 			}
 
 			@Override
 			public void onError(Exception e) {
-				String text = getString(R.string.poll_save_error);
+				String text = mActivity.getString(R.string.poll_save_error);
 				text = String.format(text, e.getMessage());
 				Toast.makeText(mActivity, text, Toast.LENGTH_LONG).show();
 			}

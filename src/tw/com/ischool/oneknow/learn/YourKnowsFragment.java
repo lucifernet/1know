@@ -18,10 +18,10 @@ import tw.com.ischool.oneknow.main.IReloadable;
 import tw.com.ischool.oneknow.main.ISearchable;
 import tw.com.ischool.oneknow.main.MainActivity;
 import tw.com.ischool.oneknow.model.KnowImageTask;
-import tw.com.ischool.oneknow.model.Knowledge;
-import tw.com.ischool.oneknow.model.OnKnowledgeReceiveListener;
 import tw.com.ischool.oneknow.model.KnowImageTask.OnImageCompleteListener;
 import tw.com.ischool.oneknow.model.KnowImageTask.OnImageProgresListener;
+import tw.com.ischool.oneknow.model.Knowledge;
+import tw.com.ischool.oneknow.model.OnKnowledgeReceiveListener;
 import tw.com.ischool.oneknow.model.parser.YourKnowledgeParser;
 import tw.com.ischool.oneknow.study.UnitStudyActivity;
 import tw.com.ischool.oneknow.util.CircleProgressBar;
@@ -54,7 +54,10 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 	private ArrayList<Knowledge> mOriKnowList;
 	private ArrayList<Knowledge> mKnowList;
 	private OnReloadCompletedListener mListener;
+	private OnSearchListener mSearchListener;
 	private KnowAdapter mKnowAdapter;
+
+	private boolean mReadyForSearch;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,7 +95,10 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 	}
 
 	@Override
-	public void search(String keyword) {		
+	public void search(String keyword) {
+		if (!mReadyForSearch)
+			return;
+
 		keyword = keyword.toLowerCase(Locale.getDefault());
 
 		mKnowList.clear();
@@ -106,10 +112,13 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 		}
 
 		bindData();
+
+		if (mSearchListener != null)
+			mSearchListener.onSearchCompleted(mKnowList.size());
 	}
 
 	@Override
-	public void cancelSearch() {	
+	public void cancelSearch() {
 		mKnowList.clear();
 		mKnowList.addAll(mOriKnowList);
 		bindData();
@@ -131,6 +140,11 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 				mProgress.setVisibility(View.GONE);
 				if (mListener != null)
 					mListener.onCompleted();
+
+				if (mSearchListener != null) {
+					mReadyForSearch = true;
+					mSearchListener.onSearchReady();
+				}
 			}
 		});
 
@@ -140,6 +154,16 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 	@Override
 	public void setOnReloadCompletedListener(OnReloadCompletedListener listener) {
 		mListener = listener;
+	}
+
+	@Override
+	public void setOnSearchListener(OnSearchListener listener) {
+		mSearchListener = listener;
+	}
+
+	@Override
+	public boolean readyForSearch() {
+		return mReadyForSearch;
 	}
 
 	private void bindData() {
@@ -266,19 +290,28 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				convertView = _inflater.inflate(R.layout.item_your_know, null);
+				ViewHolder holder = new ViewHolder();
+
+				holder.imgKnow = (ImageView) convertView
+						.findViewById(R.id.imgKnowledge);
+				holder.progImg = (CircleProgressBar) convertView
+						.findViewById(R.id.progress);
+				holder.txtKnowName = (TextView) convertView
+						.findViewById(R.id.txtKnowName);
+				holder.txtLastView = (TextView) convertView
+						.findViewById(R.id.txtLastViewTime);
+				convertView.setTag(holder);
 			}
 
-			final ImageView imgKnow = (ImageView) convertView
-					.findViewById(R.id.imgKnowledge);
-			final CircleProgressBar progImg = (CircleProgressBar) convertView
-					.findViewById(R.id.progress);
+			ViewHolder holder = (ViewHolder) convertView.getTag();
+
+			final ImageView imgKnow = holder.imgKnow;
+			final CircleProgressBar progImg = holder.progImg;
 
 			imgKnow.setImageBitmap(null);
 
-			TextView txtKnowName = (TextView) convertView
-					.findViewById(R.id.txtKnowName);
-			TextView txtLastView = (TextView) convertView
-					.findViewById(R.id.txtLastViewTime);
+			TextView txtKnowName = holder.txtKnowName;
+			TextView txtLastView = holder.txtLastView;
 
 			Knowledge know = mKnowList.get(position);
 
@@ -316,6 +349,13 @@ public class YourKnowsFragment extends Fragment implements IReloadable,
 
 			return convertView;
 		}
+	}
+
+	private class ViewHolder {
+		public TextView txtKnowName;
+		public TextView txtLastView;
+		public ImageView imgKnow;
+		public CircleProgressBar progImg;
 	}
 
 }

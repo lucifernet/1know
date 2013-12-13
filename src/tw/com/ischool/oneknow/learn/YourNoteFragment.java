@@ -41,7 +41,7 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 	public static final int CODE_PLAY = 285;
 	private LinearLayout mContainer;
 	private LinearLayout mProgress;
-	// private OnSearchListener mSearchListener;
+	private OnSearchListener mSearchListener;
 	private OnReloadCompletedListener mReloadListener;
 	// private JSONArray mJSONArray;
 	private List<JSONObject> mJSONObjects;
@@ -49,6 +49,7 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 
 	// private String mKeyword;
 	private Activity mActivity;
+	private boolean mReadySearch;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,11 +75,6 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 		reload();
 		// }
 	}
-
-	// @Override
-	// public void setOnSearchListener(OnSearchListener listener) {
-	// mSearchListener = listener;
-	// }
 
 	@Override
 	public void search(String keyword) {
@@ -114,8 +110,8 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 
 		bindData();
 
-		// if (mSearchListener != null)
-		// mSearchListener.onSearchCompleted(jsons.size());
+		if (mSearchListener != null)
+			mSearchListener.onSearchCompleted(mJSONObjects.size());
 	}
 
 	@Override
@@ -124,6 +120,16 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 		mJSONObjects.addAll(mOriJSONObjects);
 		bindData();
 
+	}
+
+	@Override
+	public void setOnSearchListener(OnSearchListener listener) {
+		mSearchListener = listener;
+	}
+
+	@Override
+	public boolean readyForSearch() {
+		return mReadySearch;
 	}
 
 	@Override
@@ -151,6 +157,11 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 
 				if (mReloadListener != null)
 					mReloadListener.onCompleted();
+
+				if (mSearchListener != null) {
+					mReadySearch = true;
+					mSearchListener.onSearchReady();
+				}
 			}
 
 			@Override
@@ -278,6 +289,7 @@ public class YourNoteFragment extends Fragment implements IReloadable,
 			txtNote.setText(content);
 			border2.addView(txtNote);
 			mContainer.addView(border);
+			txtNote.setOnClickListener(new NoteClickListener(2));
 
 			// 與上物間距
 			sep = new TextView(mActivity);

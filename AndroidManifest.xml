@@ -33,11 +33,11 @@
                 android:value="tw.com.ischool.oneknow.search.SearchResultActivity" />
         </activity>
         <activity
-            android:name="tw.com.ischool.oneknow.search.SearchResultActivity"
-            android:label="@string/title_activity_search_result" >
+            android:name="tw.com.ischool.oneknow.search.SearchResultActivity" 
+            android:label="@string/title_activity_search_result" android:launchMode="singleTop">
 
             <!-- This intent-filter identifies this activity as "searchable" -->
-            <intent-filter>
+            <intent-filter android:icon="@drawable/ic_1know">
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -47,6 +47,10 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
+            
+             <meta-data
+                android:name="android.app.default_searchable"
+                android:value="tw.com.ischool.oneknow.search.SearchResultActivity" />
         </activity>
         <activity
             android:name="tw.com.ischool.oneknow.login.LoginActivity"
@@ -60,8 +64,8 @@
         </activity>
         <activity
             android:name="tw.com.ischool.oneknow.study.EditNoteActivity"
-            android:label="@string/title_activity_edit_note"
-            android:theme="@style/Theme.Transparent"
+            android:label="@string/title_activity_edit_note"           
+            android:icon="@drawable/ic_note"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity

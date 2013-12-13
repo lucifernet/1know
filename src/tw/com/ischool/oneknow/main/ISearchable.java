@@ -1,15 +1,17 @@
 package tw.com.ischool.oneknow.main;
 
 public interface ISearchable {
-	//void setOnSearchListener(OnSearchListener listener);
+	void setOnSearchListener(OnSearchListener listener);
 
 	void search(String keyword);
 
 	void cancelSearch();
 	
-//	public interface OnSearchListener {
-//		void onDataReady();
-//
-//		void onSearchCompleted(int count);
-//	}
+	boolean readyForSearch();
+	
+	public interface OnSearchListener {
+		void onSearchReady();
+
+		void onSearchCompleted(int count);
+	}
 }

@@ -51,15 +51,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
-
-	// private static OrientationEnum ORIENTATION;
 
 	public static final String TAG = "1know";
 	public static final String PARAM_EXITS = "exits";
@@ -75,6 +70,7 @@ public class MainActivity extends Activity {
 	public static final int MODE_YOUR_CHANNEL = 2;
 
 	private static int INIT_FLAG = -1;
+	private static FragmentItem mCurrentFragmentItem;
 
 	private ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout;
@@ -131,7 +127,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long arg3) {				
+					int position, long arg3) {
 				onItemSelected(position);
 			}
 		});
@@ -146,13 +142,13 @@ public class MainActivity extends Activity {
 			 */
 			public void onDrawerClosed(View view) {
 				getActionBar().setTitle(getTitle());
-				invalidateOptionsMenu();
+				// invalidateOptionsMenu();
 			}
 
 			/** Called when a drawer has settled in a completely open state. */
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(getTitle());
-				invalidateOptionsMenu();
+				// invalidateOptionsMenu();
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -165,42 +161,6 @@ public class MainActivity extends Activity {
 			this.autoLogin();
 		else
 			onItemSelected(mCurrentItemIndex);
-
-		// UserLoginHelper login = new UserLoginHelper(this);
-		// if (savedInstanceState == null && !login.getUserName().isEmpty()) {
-		//
-		// login.setOnLoginResultListener(new OnLoginResultListener() {
-		//
-		// @Override
-		// public void onSucceed(JSONObject json) {
-		// IsLogined = true;
-		// renderItems();
-		// int i = ItemProvider.findItemIndex(YourKnowledgeItem.class);
-		// onItemSelected(i);
-		// }
-		//
-		// @Override
-		// public void onFail(String message, Exception e) {
-		// IsLogined = false;
-		// renderItems();
-		//
-		// // TODO 應該是discovery item 才是
-		// int i = ItemProvider.findItemIndex(YourKnowledgeItem.class);
-		// onItemSelected(i);
-		// }
-		// });
-		//
-		// login.execute();
-		//
-		// } else {
-		// int index = ItemProvider.findItemIndex(YourKnowledgeItem.class);
-		//
-		// if (savedInstanceState != null)
-		// index = savedInstanceState.getInt(CURRENT_INDEX);
-		//
-		// renderItems();
-		// this.onItemSelected(index);
-		// }
 
 		INIT_FLAG = 1;
 	}
@@ -221,16 +181,43 @@ public class MainActivity extends Activity {
 		if (searchItem != null)
 			searchItem.setVisible(false);
 
-		// TODO
-		if (mCurrentFragment != null) {
-			if (mCurrentFragment instanceof IReloadable) {
-				reloadItem.setVisible(true);
-			}
+		if (mCurrentItemIndex > 0) {
 
-			if (mCurrentFragment instanceof ISearchable) {
-				searchItem.setVisible(true);
+			BaseItem item = mItemList.get(mCurrentItemIndex);
+
+			if (item instanceof FragmentItem) {
+				Class<?> fragmentClass = ((FragmentItem) item)
+						.getFragmentClass();
+				if (IReloadable.class.isAssignableFrom(fragmentClass)) {
+					reloadItem.setVisible(true);
+				}
+
+				if (ISearchable.class.isAssignableFrom(fragmentClass)) {
+					searchItem.setVisible(true);
+				}
+			} else if (item instanceof TabsItem) {
+				FragmentItem fragmentItem = ((TabsItem) item).getItems().get(
+						mCurrentTabIndex);
+				Class<?> fragmentClass = fragmentItem.getFragmentClass();
+				if (IReloadable.class.isAssignableFrom(fragmentClass)) {
+					reloadItem.setVisible(true);
+				}
+
+				if (ISearchable.class.isAssignableFrom(fragmentClass)) {
+					searchItem.setVisible(true);
+				}
 			}
 		}
+		// TODO
+		// if (mCurrentFragment != null) {
+		// if (mCurrentFragment instanceof IReloadable) {
+		// reloadItem.setVisible(true);
+		// }
+		//
+		// if (mCurrentFragment instanceof ISearchable) {
+		// searchItem.setVisible(true);
+		// }
+		// }
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -314,29 +301,6 @@ public class MainActivity extends Activity {
 					.getIdentifier("android:id/search_src_text", null, null);
 			final TextView textView = (TextView) searchView.findViewById(id);
 			textView.setHintTextColor(Color.WHITE);
-			searchView.setOnQueryTextListener(new OnQueryTextListener() {
-
-				@Override
-				public boolean onQueryTextSubmit(String query) {
-					if (mCurrentFragment instanceof ISearchable) {
-						ISearchable searchable = (ISearchable) mCurrentFragment;
-						searchable.search(query);
-					}
-					return true;
-				}
-
-				@Override
-				public boolean onQueryTextChange(String newText) {
-					if (newText.length() > 0 || !textView.isFocused())
-						return false;
-
-					if (mCurrentFragment instanceof ISearchable) {
-						ISearchable searchable = (ISearchable) mCurrentFragment;
-						searchable.cancelSearch();
-					}
-					return true;
-				}
-			});
 
 			searchView.setSearchableInfo(searchManager
 					.getSearchableInfo(getComponentName()));
@@ -411,17 +375,8 @@ public class MainActivity extends Activity {
 		onItemSelected(index);
 	}
 
-	public FragmentItem getCurrentItem() {
-		BaseItem item = mItemList.get(mCurrentItemIndex);
-		if (item instanceof TabsItem) {
-			TabsItem titem = (TabsItem) item;
-			return titem.getItems().get(mCurrentTabIndex);
-		}
-
-		if (item instanceof FragmentItem)
-			return (FragmentItem) item;
-
-		return null;
+	public static FragmentItem getCurrentItem() {
+		return mCurrentFragmentItem;
 	}
 
 	private void renderItems(DisplayStatus status) {
@@ -434,59 +389,6 @@ public class MainActivity extends Activity {
 
 		mTabsAdapter = new TabsAdapter(this, mViewPager);
 	}
-
-	// private void renderTabs(int position) {
-	// mTabsAdapter.clearTabs();
-	//
-	// BaseItem item = ItemProvider.getItem(position);
-	// ActionBar bar = this.getActionBar();
-	// bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-	//
-	// // bar.removeAllTabs();
-	//
-	// if (item.getGroup() == ItemProvider.GROUP_NONE) {
-	// mContainer.setVisibility(View.VISIBLE);
-	// mViewPager.setVisibility(View.GONE);
-	// if (item.getFragmentClass() != null) {
-	// deployFragment(item.getFragmentClass().getName());
-	// }
-	// return;
-	// }
-	// if (item.getSortInGroup() == BaseItem.SORT_NO_TAB) {
-	// setTitle(item.getTitle());
-	// mContainer.setVisibility(View.VISIBLE);
-	// mViewPager.setVisibility(View.GONE);
-	// if (item.getFragmentClass() != null) {
-	// deployFragment(item.getFragmentClass().getName());
-	// }
-	// return;
-	// }
-	//
-	// bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	// mContainer.setVisibility(View.GONE);
-	// mViewPager.setVisibility(View.VISIBLE);
-	//
-	// List<BaseItem> items = ItemProvider.getTabItems(item.getGroup());
-	// if (items.size() > 1) {
-	// for (BaseItem it : items) {
-	// if (it.getStatus().isMember(DisplayStatus.LOGINED)
-	// && !IsLogined)
-	// continue;
-	//
-	// Tab tab = bar.newTab().setText(it.getTitle())
-	// .setIcon(it.getIcon())
-	// .setTabListener(new MyTabListener(it));
-	//
-	// mTabsAdapter.addTab(tab, it.getFragmentClass(), new Bundle());
-	//
-	// //
-	// // bar.addTab(tab);
-	// }
-	//
-	// // if (bar.getTabCount() > 0)
-	// // bar.setSelectedNavigationItem(item.getSortInGroup());
-	// }
-	// }
 
 	private void onItemSelected(int position) {
 		BaseItem item = mItemList.get(position);
@@ -507,27 +409,32 @@ public class MainActivity extends Activity {
 			for (FragmentItem ft : tabItem.getItems()) {
 				Tab tab = bar.newTab().setText(ft.getTitle())
 						.setIcon(ft.getIcon());
-				mTabsAdapter.addTab(tab, ft.getFragmentClass(), new Bundle());
+				mTabsAdapter.addTab(tab, ft);
 
 				// bar.addTab(tab);
 			}
 			mTabsAdapter.notifyDataSetChanged();
 
-			if (mCurrentTabIndex > 0) {
+			if (tabItem.getItems().size() > 0) {
+				mCurrentTabIndex = 0;
 				mViewPager.setCurrentItem(mCurrentTabIndex);
 			}
-			
+
 			mItemAdapter.notifyDataSetChanged();
 		} else if (item instanceof FragmentItem) {
+
 			setTitle(item.getTitle());
 			mContainer.setVisibility(View.VISIBLE);
 			mViewPager.setVisibility(View.GONE);
 			getActionBar()
 					.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
-			FragmentItem ft = (FragmentItem) item;
-			String className = ft.getFragmentClass().getName();
+			mCurrentFragmentItem = (FragmentItem) item;
+
+			String className = mCurrentFragmentItem.getFragmentClass()
+					.getName();
 			mCurrentFragment = Fragment.instantiate(this, className);
+
 			this.getFragmentManager().beginTransaction()
 					.replace(R.id.container, mCurrentFragment, className)
 					.commitAllowingStateLoss();
@@ -537,49 +444,9 @@ public class MainActivity extends Activity {
 			ActionItem action = (ActionItem) item;
 			action.invoke(this);
 		}
-		
-		invalidateOptionsMenu();
-		
-		
-		// switch (selectedItem.getTitle()) {
-		//
-		// case R.string.item_discover:
-		// this.renderTabs(position);
-		// break;
-		// case R.string.item_editor_choice:
-		// this.renderTabs(position);
-		// break;
-		// case R.string.item_your_channel:
-		// this.renderTabs(position);
-		// break;
-		// case R.string.item_login:
-		// Intent intent = new Intent(this, LoginActivity.class);
-		// startActivityForResult(intent, REQUEST_CODE_LOGIN);
-		// return;
-		// case R.string.item_logout:
-		// IsLogined = false;
-		// mDrawerListView.invalidateViews();
-		// break;
-		// case R.string.item_profile:
-		// this.renderTabs(position);
-		//
-		// break;
-		// default:
-		// this.renderTabs(position);
-		// }
-	}
 
-	// private void deployFragment(String className) {
-	// if (this.isFinishing())
-	// return;
-	//
-	// mCurrentFragment = Fragment.instantiate(this, className);
-	// this.getFragmentManager().beginTransaction()
-	// .replace(R.id.container, mCurrentFragment, className)
-	// .commitAllowingStateLoss();
-	//
-	// invalidateOptionsMenu();
-	// }
+		invalidateOptionsMenu();
+	}
 
 	public static int getInitFlag() {
 		return INIT_FLAG;
@@ -598,24 +465,10 @@ public class MainActivity extends Activity {
 			_inflator = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
-		
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			BaseItem item = mItemAdapter.getItem(position);
-
-			// if (item.getStatus().isMember(DisplayStatus.LOGINED) &&
-			// !IsLogined)
-			// convertView = _inflator.inflate(R.layout.disappear_item, null);
-			// else if (item.getStatus().isMember(DisplayStatus.UNLOGIN)
-			// && IsLogined)
-			// convertView = _inflator.inflate(R.layout.disappear_item, null);
-			// else if (item.getStatus().isMember(DisplayStatus.SEPARATION)) {
-			// convertView = _inflator.inflate(R.layout.drawer_sep, null);
-			//
-			// TextView textView = (TextView) convertView
-			// .findViewById(R.id.txtCaption);
-			// textView.setText(item.getTitle());
-			// } else {
 
 			if (item instanceof ProfilerItem) {
 				convertView = _inflator.inflate(R.layout.drawer_profile_item,
@@ -634,26 +487,17 @@ public class MainActivity extends Activity {
 				image.setImageResource(item.getIcon());
 			}
 
-			if(position == mCurrentItemIndex){
-				int color = getResources().getColor(R.color.drawer_item_selected);
+			if (position == mCurrentItemIndex) {
+				int color = getResources().getColor(
+						R.color.drawer_item_selected);
 				convertView.setBackgroundColor(color);
 			}
-			
-			// }
 
 			return convertView;
 		}
 
 		@Override
 		public boolean isEnabled(int position) {
-			// BaseItem item = ItemProvider.getItem(position);
-			// if (item.getStatus().isMember(DisplayStatus.SEPARATION))
-			// return false;
-			// if (item.getStatus() == DisplayStatus.LOGINED && !IsLogined)
-			// return false;
-			// if (item.getStatus() == DisplayStatus.UNLOGIN && IsLogined)
-			// return false;
-
 			return true;
 		}
 	}
@@ -674,17 +518,7 @@ public class MainActivity extends Activity {
 		private final Context mContext;
 		private final ActionBar mActionBar;
 		private final ViewPager mViewPager;
-		private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
-
-		final class TabInfo {
-			private final Class<?> clss;
-			private final Bundle args;
-
-			TabInfo(Class<?> _class, Bundle _args) {
-				clss = _class;
-				args = _args;
-			}
-		}
+		private final ArrayList<FragmentItem> mTabs = new ArrayList<FragmentItem>();
 
 		public TabsAdapter(Activity activity, ViewPager pager) {
 			super(activity.getFragmentManager());
@@ -695,11 +529,11 @@ public class MainActivity extends Activity {
 			mViewPager.setOnPageChangeListener(this);
 		}
 
-		public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
-			TabInfo info = new TabInfo(clss, args);
-			tab.setTag(info);
+		public void addTab(ActionBar.Tab tab, FragmentItem fragmentItem) {
+			// TabInfo info = new TabInfo(clss, args);
+			tab.setTag(fragmentItem);
 			tab.setTabListener(this);
-			mTabs.add(info);
+			mTabs.add(fragmentItem);
 			notifyDataSetChanged();
 			mActionBar.addTab(tab);
 		}
@@ -717,9 +551,11 @@ public class MainActivity extends Activity {
 
 		@Override
 		public Fragment getItem(int position) {
-			TabInfo info = mTabs.get(position);
-			return Fragment.instantiate(mContext, info.clss.getName(),
-					info.args);
+			FragmentItem info = mTabs.get(position);
+			Fragment fragment = (Fragment) Fragment.instantiate(mContext, info
+					.getFragmentClass().getName(), new Bundle());
+
+			return fragment;
 		}
 
 		@Override
@@ -758,7 +594,7 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPrimaryItemChanged(int position) {
 			mCurrentFragment = getRegisteredFragment(position);
-
+			mCurrentFragmentItem = mTabs.get(position);
 			mCurrentTabIndex = position;
 			invalidateOptionsMenu();
 			mDrawerLayout.closeDrawer(mDrawerListView);

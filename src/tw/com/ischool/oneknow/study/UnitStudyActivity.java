@@ -31,14 +31,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +74,8 @@ public class UnitStudyActivity extends YouTubeBaseActivity {
 	private LinearLayout mProgress;
 	private ArrayList<Integer> mFuncIcons;
 	private FuncAdapter mFuncAdapter;
+	private PopupWindow mPopupNotes;
+	private ListView mLvNotes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -235,19 +240,19 @@ public class UnitStudyActivity extends YouTubeBaseActivity {
 
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CODE_ADD_NOTE
 				&& resultCode == EditNoteActivity.RESULT_OK) {
-//			if (mPopupNotes != null)
-//				mPopupNotes.dismiss();
-//			showPopupNotes(mBtnNotes);
+			// if (mPopupNotes != null)
+			// mPopupNotes.dismiss();
+			// showPopupNotes(mBtnNotes);
 		} else if (requestCode == CODE_EDIT_NOTE
 				&& resultCode == EditNoteActivity.RESULT_OK) {
-//			if (mPopupNotes != null)
-//				mPopupNotes.dismiss();
-//			showPopupNotes(mBtnNotes);
+			// if (mPopupNotes != null)
+			// mPopupNotes.dismiss();
+			// showPopupNotes(mBtnNotes);
 		} else if (requestCode == CODE_VIEW_DETAIL
 				&& resultCode == StudyHistoryActivity.RESULT_SEEK_TO_UNIT) {
 			// TODO
@@ -474,6 +479,96 @@ public class UnitStudyActivity extends YouTubeBaseActivity {
 			mFuncIcons.add(R.drawable.ic_right);
 
 		mFuncAdapter.notifyDataSetChanged();
+	}
+
+	private void showPopupNotes(final Button button) {
+		getCurrentHandler().pause();
+
+		final View unitView = findViewById(R.id.container_unit);
+
+		if (mPopupNotes == null) {
+			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View mPopNoteView = layoutInflater.inflate(R.layout.popup_notes,
+					null);
+			mLvNotes = (ListView) mPopNoteView.findViewById(R.id.lvNotes);
+			mLvNotes.setBackgroundColor(0x00000000);
+
+			Button btnAddNote = (Button) mPopNoteView
+					.findViewById(R.id.btnEditNote);
+			btnAddNote.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					addNote();
+				}
+			});
+
+			mLvNotes.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long itemId) {
+					NoteViewHolder holder = (NoteViewHolder) view.getTag();
+					JSONObject json = holder.json;
+					int time = JSONUtil.getInt(json, "time");
+					getCurrentHandler().seekTo(time);
+
+					mPopupNotes.dismiss();
+				}
+			});
+
+			mPopupNotes = new PopupWindow(this);
+			mPopupNotes.setContentView(mPopNoteView);
+
+			mPopupNotes = new PopupWindow(mPopNoteView,
+					unitView.getWidth() * 3 / 4, unitView.getHeight()
+							+ findViewById(R.id.layout_unit_top).getHeight());
+		}
+
+		button.setEnabled(false);
+		button.setText(R.string.study_notes_loading);
+
+		NoteTask task = new NoteTask();
+		task.setOnReceiveListener(new OnReceiveListener<JSONArray>() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onReceive(JSONArray result) {
+				if (!isFinishing()) {
+					NoteAdapter adapter = new NoteAdapter(result);
+					mLvNotes.setAdapter(adapter);
+
+					mPopupNotes.setBackgroundDrawable(new BitmapDrawable());
+					mPopupNotes.setFocusable(true);
+					mPopupNotes.setOutsideTouchable(true);
+
+					int height = unitView.getHeight()
+							+ findViewById(R.id.layout_unit_top).getHeight();
+
+					mPopupNotes.showAsDropDown(button,
+							(0 - unitView.getWidth() / 4),
+							(0 - button.getHeight() - height));
+
+					button.setEnabled(true);
+					button.setText(R.string.study_notes);
+				}
+			}
+
+			@Override
+			public void onError(Exception e) {
+				String msg = getString(R.string.study_load_notes_error);
+				msg = String.format(msg, e.getMessage());
+				Toast.makeText(UnitStudyActivity.this, msg, Toast.LENGTH_LONG)
+						.show();
+				button.setEnabled(true);
+				button.setText(R.string.study_notes);
+			}
+		});
+
+		UnitItem item = mItemHandler.getItems().get(mSelectedItemIndex);
+		JSONObject json = item.getJSON();
+		String unitUqid = JSONUtil.getString(json, "uqid");
+		task.execute(unitUqid);
 	}
 
 	public static String getDisplayTime(Context context, int seconds) {
@@ -732,6 +827,129 @@ public class UnitStudyActivity extends YouTubeBaseActivity {
 			int imageId = mFuncIcons.get(position);
 			ImageView img = (ImageView) convertView.findViewById(R.id.icon);
 			img.setImageResource(imageId);
+			return convertView;
+		}
+	}
+
+	private class NoteViewHolder {
+		public TextView txtTime;
+		public TextView txtNote;
+		public JSONObject json;
+		public ImageView imgEdit;
+	}
+
+	private class NoteTask extends AsyncTask<String, Void, JSONArray> {
+		private Exception _exception;
+		private OnReceiveListener<JSONArray> _listener;
+
+		@Override
+		protected JSONArray doInBackground(String... arg0) {
+			String uqid = arg0[0];
+			String serviceURL = String.format(OneKnow.SERVICE_UNIT_NOTES, uqid);
+			try {
+				return OneKnow.getFrom(serviceURL, null, JSONArray.class);
+			} catch (Exception e) {
+				_exception = e;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(JSONArray result) {
+			if (result != null && _listener != null) {
+				_listener.onReceive(result);
+			} else if (_exception != null && _listener != null) {
+				_listener.onError(_exception);
+			}
+		}
+
+		public void setOnReceiveListener(OnReceiveListener<JSONArray> listener) {
+			_listener = listener;
+		}
+	}
+
+	private class NoteAdapter extends BaseAdapter {
+		private JSONArray _jsons;
+		private LayoutInflater _inflater;
+
+		public NoteAdapter(JSONArray result) {
+			_jsons = result;
+			_inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		}
+
+		@Override
+		public int getCount() {
+			return _jsons.length();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			try {
+				return _jsons.get(position);
+			} catch (JSONException e) {
+				return null;
+			}
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			TextView txtTime, txtNote;
+			ImageView imgEdit;
+			NoteViewHolder holder;
+
+			if (convertView == null) {
+				convertView = _inflater
+						.inflate(R.layout.item_study_notes, null);
+				txtTime = (TextView) convertView.findViewById(R.id.txtTime);
+				txtNote = (TextView) convertView.findViewById(R.id.txtNote);
+				imgEdit = (ImageView) convertView.findViewById(R.id.imgEdit);
+
+				holder = new NoteViewHolder();
+				holder.txtNote = (txtNote);
+				holder.txtTime = (txtTime);
+				holder.imgEdit = (imgEdit);
+				convertView.setTag(holder);
+			} else {
+				holder = (NoteViewHolder) convertView.getTag();
+				txtTime = holder.txtTime;
+				txtNote = holder.txtNote;
+				imgEdit = holder.imgEdit;
+			}
+
+			final JSONObject json = (JSONObject) getItem(position);
+			final String content = JSONUtil.getString(json, "content");
+			final int time = JSONUtil.getInt(json, "time");
+			String displayTime = getDisplayTime(UnitStudyActivity.this, time);
+			txtTime.setText(displayTime);
+			txtNote.setText(content);
+			holder.json = json;
+
+			imgEdit.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View view) {
+					UnitItem item = mItemHandler.getItems().get(
+							mSelectedItemIndex);
+
+					Intent intent = new Intent(UnitStudyActivity.this,
+							EditNoteActivity.class);
+					intent.putExtra(EditNoteActivity.PARAM_CURRENT_TIME,
+							(double) time);
+					intent.putExtra(EditNoteActivity.PARAM_MODE, CODE_EDIT_NOTE);
+					intent.putExtra(EditNoteActivity.PARAM_NOTE, content);
+					intent.putExtra(EditNoteActivity.PARAM_TOTAL_TIME,
+							item.getTime());
+					intent.putExtra(EditNoteActivity.PARAM_NOTE_UQID,
+							JSONUtil.getString(json, "uqid"));
+					startActivityForResult(intent, CODE_EDIT_NOTE);
+				}
+			});
+
 			return convertView;
 		}
 
